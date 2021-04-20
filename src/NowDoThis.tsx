@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const paragraphStyles: React.CSSProperties = {
   margin: '18px 18px 16px',
@@ -26,68 +26,47 @@ const buttonStyles: React.CSSProperties = {
   cursor: 'pointer',
 };
 
-interface ToDoProps {}
+const NowDoThis = () => {
+  const [userInput, setUserInput] = useState<string>('');
+  const [toDoList, setToDoList] = useState<string[]>([]);
 
-interface ToDoState {
-  userInput: string;
-  toDoList: string[];
-}
+  const handleSubmit = () => {
+    const itemsArray = userInput.split('\n').filter((item) => item !== '');
+    setToDoList(itemsArray);
+  };
 
-export default class NowDoThis extends React.Component<ToDoProps, ToDoState> {
-  constructor(props: ToDoProps) {
-    super(props);
-    this.state = {
-      userInput: '',
-      toDoList: [],
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUserInput(e.target.value);
+  };
 
-  handleSubmit() {
-    const itemsArray = this.state.userInput
-      .split('\n')
-      .filter((item) => item !== '');
-    this.setState({
-      toDoList: itemsArray,
-    });
-  }
+  const items = toDoList.map((item) => (
+    <li>
+      <h1>{item}</h1>
+    </li>
+  ));
 
-  handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    this.setState({
-      userInput: e.target.value,
-    });
-  }
-
-  render() {
-    const items = this.state.toDoList.map((item) => (
-      <li>
-        <h1>{item}</h1>
-      </li>
-    ));
-    return (
-      <div>
-        <p className="instructions" style={paragraphStyles}>
-          Write your todo list in the box below.
-        </p>
-        <textarea
-          onChange={this.handleChange}
-          value={this.state.userInput}
-          style={textAreaStyles}
-        />
-        <br />
-        <button id="ready" onClick={this.handleSubmit} style={buttonStyles}>
-          Ready
-        </button>
-        <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-          {items}
-        </ul>
-        <div style={{ margin: '16px 0', fontSize: 13 }}>
-          <a id="about-link" href="#" style={{ color: '#aaa' }}>
-            About
-          </a>
-        </div>
+  return (
+    <div>
+      <p className="instructions" style={paragraphStyles}>
+        Write your todo list in the box below.
+      </p>
+      <textarea
+        onChange={handleChange}
+        value={userInput}
+        style={textAreaStyles}
+      />
+      <br />
+      <button id="ready" onClick={handleSubmit} style={buttonStyles}>
+        Ready
+      </button>
+      <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>{items}</ul>
+      <div style={{ margin: '16px 0', fontSize: 13 }}>
+        <a id="about-link" href="#" style={{ color: '#aaa' }}>
+          About
+        </a>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+export default NowDoThis;
